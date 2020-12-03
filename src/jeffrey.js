@@ -14,10 +14,10 @@ client.on('ready', () => {
 
 
 // Custom Commands
-client.on('message', (message) => {
+client.on('message', async (message) => {
     if (message.author.bot) return; // .bot is a boolean, incase the bot sends a message it returns so anything after it doens't run so it doesn't spam because of itself.
-    if (message.content.startsWith(PREFIX)) { // Split the custom prefix from the command in the message it grabbed from discord.
-            const [CMD_NAME, ...args] = message.content
+    if (message.content.startsWith(PREFIX)) { // Check if the message starts with the prefix before doing anything else.
+            const [CMD_NAME, ...args] = message.content // Take the Name of the command and any arguments passed to it in a list, seperate them using the seperator(...)
             .trim()
             .substring(PREFIX.length)
             .split(/\s+/);
@@ -35,6 +35,26 @@ client.on('message', (message) => {
             } else {
                 message.reply("the provided member does either not exist or is not in this server.");
             }
+        } else if (CMD_NAME === 'ban') {
+            if (!message.member.hasPermission('BAN_MEMBERS'))
+                return message.reply('Insufficient permission')
+            if (args.length === 0) return message.reply("Please provide a user ID");
+            try {
+                const user = await message.guild.members.ban(args[0]);
+                message.channel.send('User successfully banned');
+            } catch (err) {
+                console.log(err);
+                message.channel.send('Error occured. Either no user has been found or I have insufficient permissions')
+            }
+        }
+    }
+
+    // Message handler to ban any users who use inappropriate language.
+    if (message.content === 'kanker', 'slet', 'hoer', 'homo') {
+        try {
+            const user = await message.guild.members.ban(message.author.id);
+        } catch (err) {
+            console.log(err)
         }
     }
 });

@@ -1,11 +1,13 @@
 require('dotenv').config();
 
 const { Client } = require('discord.js');
-const client = new Client();
+const client = new Client({
+    partials:['MESSAGE', 'REACTION']
+});
 const PREFIX = "$";
 
 
-// LOGIN AND BOT ACTIVITY
+// CLIENT READY AND BOT ACTIVITY
 client.on('ready', () => {
     console.log("Connected as " + client.user.tag);
 
@@ -13,7 +15,7 @@ client.on('ready', () => {
 });
 
 
-// Custom Commands
+// CUSTOM COMMANDS.
 client.on('message', async (message) => {
     if (message.author.bot) return; // .bot is a boolean, incase the bot sends a message it returns so anything after it doens't run so it doesn't spam because of itself.
     if (message.content.startsWith(PREFIX)) { // Check if the message starts with the prefix before doing anything else.
@@ -48,15 +50,102 @@ client.on('message', async (message) => {
             }
         }
     }
+});
 
-    // Message handler to ban any users who use inappropriate language.
-    if (message.content === 'kanker', 'slet', 'hoer', 'homo') {
-        try {
-            const user = await message.guild.members.ban(message.author.id);
-        } catch (err) {
-            console.log(err)
+// MESSAGE HANDLER TO BAN ANY USERS WHO USE INAPPROPRIATE LANGUAGE.
+client.on ('message', async (message) => {
+    if (message.author.bot) return;
+        if (message.content === 'banpls' || message.content === 'kanker' || message.content === 'slet') {
+            try {
+                const user = await message.guild.members.ban(message.author.id);
+                message.channel.send('Succesfully banned a user for "Inapropriate behavior"')
+            } catch (err) {
+                console.log(err);
+                message.channel.send('something went wrong..')
+            }
+        }
+});
+
+// CUSTOM MESSAGE RESPONSES.
+client.on('message', (message) => {
+    if (message.author.bot) return;
+        // Wat is Mila?
+        if (message.content === 'WAT IS MILA'.toLowerCase()) {
+            message.reply(`nou ${message.author.username}, Mila is de allerliefste allermooiste aller slimste persoon in deze server... Nee okay, de slimste is nog wel debatable.`)
+                .catch((err) => message.channel.send('Something went wrong..'));
+        }
+
+        // Wat is Vincent?
+        if (message.content === 'WAT IS VINCENT'.toLowerCase()) {
+            message.reply(`nou ${message.author.username}, Vincent is een big boy :sunglasses:`)
+                .catch((err) => message.channel.send('Something went wrong..'));
+        }
+
+        // Wat is Arissa?
+        if (message.content === 'WAT IS ARISSA'.toLowerCase()) {
+            message.reply(`nou ${message.author.username}, Arissa is een bad meme dealer :rage:`)
+                .catch((err) => message.channel.send('Something went wrong..'));
+        }
+
+        // Wat is Isabel?
+        if (message.content === 'WAT IS ISABEL'.toLowerCase()) {
+            message.reply(`nou ${message.author.username}, Isabel heeft typ aids.`)
+                .catch((err) => message.channel.send('Something went wrong..'));
+        }
+});
+
+// EMOJI ROLES ADD.
+client.on('messageReactionAdd', (reaction, user) => {
+    const { name } = reaction.emoji;
+    const member = reaction.message.guild.members.cache.get(user.id);
+    // Retarted Twats Roles
+    if (reaction.message.id === '784396444643491850') {
+        switch (name) {
+            case '⌨️':
+                member.roles.add('771743720915075164');
+                break;
+            case '🎮':
+                member.roles.add('771743785448505405');
+                break;
+            case '🕹️':
+                member.roles.add('771758719906218016');
+                break
+            case '📺':
+                member.roles.add('771751184495149076');
+                break;
+            case '🇳🇱':
+                member.roles.add('771742559213977670');
+                break;
         }
     }
 });
 
+// EMOJI ROLES Remove.
+client.on('messageReactionRemove', (reaction, user) => {
+    const { name } = reaction.emoji;
+    const member = reaction.message.guild.members.cache.get(user.id);
+    // Retarted Twats Roles
+    if (reaction.message.id === '784396444643491850') {
+        switch (name) {
+            case '⌨️':
+                member.roles.remove('771743720915075164');
+                break;
+            case '🎮':
+                member.roles.remove('771743785448505405');
+                break;
+            case '🕹️':
+                member.roles.remove('771758719906218016');
+                break
+            case '📺':
+                member.roles.remove('771751184495149076');
+                break;
+            case '🇳🇱':
+                member.roles.remove('771742559213977670');
+                break;
+        }
+    }
+});
+
+
+// CLIENT LOGIN
 client.login(process.env.DISCORD_BOT_TOKEN);

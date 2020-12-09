@@ -70,25 +70,25 @@ client.on ('message', async (message) => {
 client.on('message', (message) => {
     if (message.author.bot) return;
         // Wat is Mila?
-        if (message.content === 'WAT IS MILA'.toLowerCase()) {
+        if (message.content.toUpperCase() === 'WAT IS MILA') {
             message.reply(`nou ${message.author.username}, Mila is de allerliefste allermooiste aller slimste persoon in deze server... Nee okay, de slimste is nog wel debatable.`)
                 .catch((err) => message.channel.send('Something went wrong..'));
         }
 
         // Wat is Vincent?
-        if (message.content === 'WAT IS VINCENT'.toLowerCase()) {
+        if (message.content.toUpperCase() === 'WAT IS VINCENT') {
             message.reply(`nou ${message.author.username}, Vincent is een big boy :sunglasses:`)
                 .catch((err) => message.channel.send('Something went wrong..'));
         }
 
         // Wat is Arissa?
-        if (message.content === 'WAT IS ARISSA'.toLowerCase()) {
+        if (message.content.toUpperCase() === 'WAT IS ARISSA') {
             message.reply(`nou ${message.author.username}, Arissa is een bad meme dealer :rage:`)
                 .catch((err) => message.channel.send('Something went wrong..'));
         }
 
         // Wat is Isabel?
-        if (message.content === 'WAT IS ISABEL'.toLowerCase()) {
+        if (message.content.toUpperCase() === 'WAT IS ISABEL') {
             message.reply(`nou ${message.author.username}, Isabel heeft typ aids.`)
                 .catch((err) => message.channel.send('Something went wrong..'));
         }

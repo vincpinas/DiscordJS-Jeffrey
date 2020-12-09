@@ -148,4 +148,4 @@ client.on('messageReactionRemove', (reaction, user) => {
 
 
 // CLIENT LOGIN
-client.login(process.env.DISCORD_BOT_TOKEN);
+client.login(process.env.token);

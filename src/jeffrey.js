@@ -55,7 +55,7 @@ client.on('message', async (message) => {
 // MESSAGE HANDLER TO BAN ANY USERS WHO USE INAPPROPRIATE LANGUAGE.
 client.on ('message', async (message) => {
     if (message.author.bot) return;
-        if (message.content === 'banpls' || message.content === 'kanker' || message.content === 'slet') {
+        if (message.content.toLowerCase() === 'banpls' || message.content.toLowerCase() === 'kanker' || message.content.toLowerCase() === 'slet') {
             try {
                 const user = await message.guild.members.ban(message.author.id);
                 message.channel.send('Succesfully banned a user for "Inapropriate behavior"')

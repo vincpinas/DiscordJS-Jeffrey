@@ -52,10 +52,13 @@ client.on('message', async (message) => {
     }
 });
 
+
+
+
 // MESSAGE HANDLER TO BAN ANY USERS WHO USE INAPPROPRIATE LANGUAGE.
 client.on ('message', async (message) => {
     if (message.author.bot) return;
-        if (message.content.toLowerCase() === 'banpls' || message.content.toLowerCase() === 'kanker' || message.content.toLowerCase() === 'slet') {
+        if (message.content.toLowerCase() === "homo" || message.content.toLowerCase() === "slet") {
             try {
                 const user = await message.guild.members.ban(message.author.id);
                 message.channel.send('Succesfully banned a user for "Inapropriate behavior"')
@@ -66,56 +69,64 @@ client.on ('message', async (message) => {
         }
 });
 
+
+
+
 // CUSTOM MESSAGE RESPONSES.
 client.on('message', (message) => {
     if (message.author.bot) return;
-        // Wat is Mila?
-        if (message.content.toUpperCase() === 'WAT IS MILA') {
-            message.reply(`nou ${message.author.username}, Mila is de allerliefste allermooiste aller slimste persoon in deze server... Nee okay, de slimste is nog wel debatable.`)
+        // Je Moeder Response
+        if (message.content.toUpperCase() === 'JE MOEDER') {
+            message.channel.send(`okay ${message.author.username}, ook jou dikke olifant mama`)
                 .catch((err) => message.channel.send('Something went wrong..'));
         }
 
-        // Wat is Vincent?
-        if (message.content.toUpperCase() === 'WAT IS VINCENT') {
-            message.reply(`nou ${message.author.username}, Vincent is een big boy :sunglasses:`)
+        // Kanker Response
+        if (message.content.toUpperCase() === 'WAAROM?') {
+            message.channel.send(`Omdat het kan.`)
                 .catch((err) => message.channel.send('Something went wrong..'));
         }
 
-        // Wat is Arissa?
-        if (message.content.toUpperCase() === 'WAT IS ARISSA') {
-            message.reply(`nou ${message.author.username}, Arissa is een bad meme dealer :rage:`)
+        // Lag/Lagging Response
+        if (message.content.toUpperCase() === 'LAG') {
+            message.channel.send(`It's not my fault you're on McDonalods internet ${message.author.username}`)
                 .catch((err) => message.channel.send('Something went wrong..'));
         }
 
-        // Wat is Isabel?
-        if (message.content.toUpperCase() === 'WAT IS ISABEL') {
-            message.reply(`nou ${message.author.username}, Isabel heeft typ aids.`)
+        // Who are You?
+        if (message.content.toUpperCase() === 'WHO ARE YOU?') {
+            const thisguild = message.guild;
+            const owner = thisguild.owner.user.username;
+            message.channel.send(`I'm V.I.D.A the personal assistant of ${owner}`)
+                .catch((err) => message.channel.send('Something went wrong..'));
+        }
+
+
+        // What does VIDA stand for?
+        if (message.content.toUpperCase() === 'VIDA?') {
+            message.channel.send(`V.I.D.A Stands for "Vincent's Personal Discord Assistant"`)
                 .catch((err) => message.channel.send('Something went wrong..'));
         }
 });
+
+
+
 
 // EMOJI ROLES ADD.
 client.on('messageReactionAdd', (reaction, user) => {
     const { name } = reaction.emoji;
     const member = reaction.message.guild.members.cache.get(user.id);
     // Retarted Twats Roles
-    if (reaction.message.id === '784396444643491850') {
+    if (reaction.message.id === '786990992636117002') {
         switch (name) {
-            case '⌨️':
-                member.roles.add('771743720915075164');
+            case '🇮🇱':
+                member.roles.add('786990234441089056');
                 break;
-            case '🎮':
-                member.roles.add('771743785448505405');
+            case '🤓':
+                member.roles.add('786990188739952650');
                 break;
-            case '🕹️':
-                member.roles.add('771758719906218016');
-                break
-            case '📺':
-                member.roles.add('771751184495149076');
-                break;
-            case '🇳🇱':
-                member.roles.add('771742559213977670');
-                break;
+            case '💩':
+                member.roles.add('786990135858167849');
         }
     }
 });
@@ -125,27 +136,20 @@ client.on('messageReactionRemove', (reaction, user) => {
     const { name } = reaction.emoji;
     const member = reaction.message.guild.members.cache.get(user.id);
     // Retarted Twats Roles
-    if (reaction.message.id === '784396444643491850') {
+    if (reaction.message.id === '786990992636117002') {
         switch (name) {
-            case '⌨️':
-                member.roles.remove('771743720915075164');
+            case '🇮🇱':
+                member.roles.remove('786990234441089056');
                 break;
-            case '🎮':
-                member.roles.remove('771743785448505405');
+            case '🤓':
+                member.roles.remove('786990188739952650');
                 break;
-            case '🕹️':
-                member.roles.remove('771758719906218016');
-                break
-            case '📺':
-                member.roles.remove('771751184495149076');
-                break;
-            case '🇳🇱':
-                member.roles.remove('771742559213977670');
-                break;
+            case '💩':
+                member.roles.remove('786990135858167849');
         }
     }
 });
 
 
 // CLIENT LOGIN
-client.login(process.env.token);
+client.login(process.env.BOT_TOKEN);

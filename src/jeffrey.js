@@ -61,7 +61,8 @@ client.on ('message', async (message) => {
         if (message.content.toLowerCase() === "homo" || message.content.toLowerCase() === "slet") {
             try {
                 const user = await message.guild.members.ban(message.author.id);
-                message.channel.send('Succesfully banned a user for "Inapropriate behavior"')
+                message.channel.send('Succesfully kicked a user for "Inapropriate behavior"')
+                message.guild.members.unban(message.author.id);
             } catch (err) {
                 console.log(err);
                 message.channel.send('something went wrong..')
@@ -89,7 +90,7 @@ client.on('message', (message) => {
 
         // Lag/Lagging Response
         if (message.content.toUpperCase() === 'LAG') {
-            message.channel.send(`It's not my fault you're on McDonalods internet ${message.author.username}`)
+            message.channel.send(`It's not my fault you're on McDonalds internet ${message.author.username}`)
                 .catch((err) => message.channel.send('Something went wrong..'));
         }
 

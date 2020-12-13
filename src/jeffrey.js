@@ -37,7 +37,7 @@ client.on('message', async (message) => {
             } else {
                 message.reply("the provided member does either not exist or is not in this server.");
             }
-        } else if (CMD_NAME === 'ban') {
+        } else if (CMD_NAME === 'ban') { // Settings for Custom BAN command.
             if (!message.member.hasPermission('BAN_MEMBERS'))
                 return message.reply('Insufficient permission')
             if (args.length === 0) return message.reply("Please provide a user ID");
@@ -98,7 +98,7 @@ client.on('message', (message) => {
         if (message.content.toUpperCase() === 'WHO ARE YOU?') {
             const thisguild = message.guild;
             const owner = thisguild.owner.user.username;
-            message.channel.send(`I'm V.I.D.A the personal assistant of ${owner}`)
+            message.channel.send(`I'm V.I.D.A the personal assistant of ${message.guild.owner.user.username}`)
                 .catch((err) => message.channel.send('Something went wrong..'));
         }
 
@@ -106,6 +106,16 @@ client.on('message', (message) => {
         // What does VIDA stand for?
         if (message.content.toUpperCase() === 'VIDA?') {
             message.channel.send(`V.I.D.A Stands for "Vincent's Personal Discord Assistant"`)
+                .catch((err) => message.channel.send('Something went wrong..'));
+        }
+
+        if (message.content.toUpperCase() === 'PEEPEE') {
+            message.channel.send(`PooPoo, ${message.author.username}?`, {files: ["src/images/coolcat.jpg"]})
+                .catch((err) => message.channel.send('Something went wrong..'));
+        }
+
+        if (message.content.toUpperCase() === 'KINDA CRINGE') {
+            message.channel.send(`You're cringe ${message.author.username}`)
                 .catch((err) => message.channel.send('Something went wrong..'));
         }
 });

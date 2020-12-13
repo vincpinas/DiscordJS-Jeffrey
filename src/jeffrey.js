@@ -1,11 +1,16 @@
 require('dotenv').config();
 
-const { Client } = require('discord.js');
+const { Client, Attachment } = require('discord.js');
 const client = new Client({
     partials:['MESSAGE', 'REACTION']
 });
 const PREFIX = "$";
 
+var jeffreyversion = "1.3"
+
+var servers = {};
+
+const ytdl = require("ytdl-core")
 
 // CLIENT READY AND BOT ACTIVITY
 client.on('ready', () => {
@@ -82,7 +87,7 @@ client.on('message', (message) => {
                 .catch((err) => message.channel.send('Something went wrong..'));
         }
 
-        // Kanker Response
+        // Waarom? Response
         if (message.content.toUpperCase() === 'WAAROM?') {
             message.channel.send(`Omdat het kan.`)
                 .catch((err) => message.channel.send('Something went wrong..'));
@@ -102,20 +107,27 @@ client.on('message', (message) => {
                 .catch((err) => message.channel.send('Something went wrong..'));
         }
 
-
         // What does VIDA stand for?
         if (message.content.toUpperCase() === 'VIDA?') {
             message.channel.send(`V.I.D.A Stands for "Vincent's Personal Discord Assistant"`)
                 .catch((err) => message.channel.send('Something went wrong..'));
         }
 
+        // PeePee Response
         if (message.content.toUpperCase() === 'PEEPEE') {
             message.channel.send(`PooPoo, ${message.author.username}?`, {files: ["src/images/coolcat.jpg"]})
                 .catch((err) => message.channel.send('Something went wrong..'));
         }
 
+        // Kinda Cringe Response
         if (message.content.toUpperCase() === 'KINDA CRINGE') {
             message.channel.send(`You're cringe ${message.author.username}`)
+                .catch((err) => message.channel.send('Something went wrong..'));
+        }
+
+        // Current Version
+        if (message.content.toUpperCase() === 'CURRENT VERSION?' || message.content.toUpperCase() === 'CURRENT V?' || message.content.toUpperCase() === 'WHAT IS THE CURRENT VERSION?' || message.content.toUpperCase() === 'WHAT IS THE CURRENT V?') {
+            message.channel.send(`My current version is ${jeffreyversion}`)
                 .catch((err) => message.channel.send('Something went wrong..'));
         }
 });
@@ -193,6 +205,60 @@ client.on('messageReactionRemove', (reaction, user) => {
     }
 });
 
+
+// Music Commands
+client.on('message', message => {
+    let args = message.content.substring(PREFIX.length).split(" ");
+
+    switch (args[0]) {
+        case 'play':
+
+            function play(connection, message) {
+                var server = servers[message.guild.id];
+
+                server.dispatcher = connection.playStream(ytdl(server.queue[0], {filter: "audioonly"}));
+
+                server.queue.shift();
+
+                server.dispatcher.on("end", function(){
+                    if(server.queue[0]){
+                        play(connection, message);
+                    } else {
+                        connection.disconnect();
+                    }
+                });
+
+            }
+
+
+            if(!args[1]) {
+                message.channel.send("Please provide a valid link.");
+                return;
+            }
+
+            if(!message.member.voice.channel) {
+                message.channel.send("You must be in a voice channel to play the bot, idiot.")
+                return;
+            }
+
+            if(!servers[message.guild.id]) servers[message.guild.id] = {
+                queue: []
+            }
+
+            var server = servers[message.guild.id];
+
+            server.queue.push(args[1]);
+
+            if (message.member.voice.connection) 
+                    message.member.voice.channel.join()
+                    .then(function(connection) {
+                        play(connection, message);
+            })
+
+
+        break;
+    }
+});
 
 // CLIENT LOGIN
 client.login(process.env.BOT_TOKEN);

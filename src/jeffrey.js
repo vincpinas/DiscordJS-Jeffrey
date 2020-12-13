@@ -117,17 +117,33 @@ client.on('message', (message) => {
 client.on('messageReactionAdd', (reaction, user) => {
     const { name } = reaction.emoji;
     const member = reaction.message.guild.members.cache.get(user.id);
-    // Retarted Twats Roles
+    // Civilized / Peasant Roles
     if (reaction.message.id === '786990992636117002') {
         switch (name) {
-            case '🇮🇱':
-                member.roles.add('786990234441089056');
-                break;
             case '🤓':
                 member.roles.add('786990188739952650');
                 break;
             case '💩':
                 member.roles.add('786990135858167849');
+        }
+    }
+
+
+    // Game / Player Roles
+    if (reaction.message.id === '787479010791129189') {
+        switch (name) {
+            case '🧑‍🦽':
+                member.roles.add('787477187820519444');
+                break;
+            case '👶🏾':
+                member.roles.add('787479046647840818');
+                break;
+            case '🇷🇺':
+                member.roles.add('787479053891665921');
+                break;
+            case '🔫':
+                member.roles.add('787479056689266698');
+                break;
         }
     }
 });
@@ -136,17 +152,33 @@ client.on('messageReactionAdd', (reaction, user) => {
 client.on('messageReactionRemove', (reaction, user) => {
     const { name } = reaction.emoji;
     const member = reaction.message.guild.members.cache.get(user.id);
-    // Retarted Twats Roles
+    // Civilized / Peasant Roles
     if (reaction.message.id === '786990992636117002') {
         switch (name) {
-            case '🇮🇱':
-                member.roles.remove('786990234441089056');
-                break;
             case '🤓':
                 member.roles.remove('786990188739952650');
                 break;
             case '💩':
                 member.roles.remove('786990135858167849');
+        }
+    }
+
+
+    // Game / Player Roles
+    if (reaction.message.id === '787479010791129189') {
+        switch (name) {
+            case '🧑‍🦽':
+                member.roles.remove('787477187820519444');
+                break;
+            case '👶🏾':
+                member.roles.remove('787479046647840818');
+                break;
+            case '🇷🇺':
+                member.roles.remove('787479053891665921');
+                break;
+            case '🔫':
+                member.roles.remove('787479056689266698');
+                break;
         }
     }
 });

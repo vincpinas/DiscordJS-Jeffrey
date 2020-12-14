@@ -1,0 +1,134 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    font-family: 'Roboto';
+}
+
+body {
+    background-color: rgb(19, 19, 19);
+}
+
+a {
+    text-decoration: none;
+  }
+
+nav {
+    background-color: rgb(16, 16, 16);
+    width: 4rem;
+    height: 100vh;
+}
+
+.links {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.links i {
+    color: #4b4b4b;
+    margin-bottom: 30px;
+    font-size: 20px;
+    transition: all .4s;
+}
+
+.links #currentpage {
+    color: #5bb0b6;
+}
+
+.links i:hover {
+    color: #72dbe2;
+}
+
+.index-intro {
+    display: flex;
+    flex-direction: row;
+}
+
+.index-intro .introduction h2 {
+    color: white;
+    font-size: 40px;
+}
+
+.index-intro .introduction p {
+    font-size: 14px;
+    margin-top: 20px;
+    margin-bottom: 30px;
+    color: rgb(82, 82, 82);
+    
+}
+
+.index-intro .introduction a {
+    width: fit-content;
+    background-color: rgb(16, 16, 16);
+    border: 2px solid rgb(21, 21, 21);
+    color: rgb(228, 228, 228);
+    border-radius: 5px;
+    padding: 8px 20px;
+    transition: all 0.8s ease 0s;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 1px 1px 4px 1px rgba(0, 0, 0, 0.261);
+}
+
+.index-intro .introduction a:hover {
+    background-color: rgb(208, 208, 208);
+    border: 2px solid rgb(182, 182, 182);
+    color: rgb(43, 43, 43);
+    box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.261);
+}
+
+.index-intro .introduction {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 6rem;
+}
+
+.playtest-content {
+    display: flex;
+    flex-direction: row;
+}
+
+.playtest-content #add {
+    width: fit-content;
+    height: fit-content;
+    background-color: rgb(16, 16, 16);
+    border: 2px solid rgb(21, 21, 21);
+    color: rgb(228, 228, 228);
+    border-radius: 5px;
+    padding: 8px 20px;
+    transition: all 0.8s ease 0s;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 1px 1px 4px 1px rgba(0, 0, 0, 0.261);
+}
+
+.playtest-content #add:hover {
+    background-color: rgb(208, 208, 208);
+    border: 2px solid rgb(182, 182, 182);
+    color: rgb(43, 43, 43);
+    box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.261);
+}
+
+.playtest-content .HERO{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+iframe {
+    margin-bottom: 3rem;
+    border-radius: 5px;
+    border: 2px solid rgb(19, 19, 19);
+    outline: none;
+}

@@ -251,11 +251,10 @@ client.on('message', message => {
 
             if (message.member.voice.connection) 
                     message.member.voice.channel.join()
+                    .catch((err) => console.log(err))
                     .then(function(connection) {
                         play(connection, message);
             })
-
-
         break;
     }
 });

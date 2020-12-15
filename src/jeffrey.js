@@ -218,10 +218,10 @@ client.on('message', async message => {
 
     if (message.content.toLowerCase().startsWith(`${PREFIX}play`)) {
         const voiceChannel = message.member.voice.channel
-        if(!voiceChannel) return message.channel.send(`${message.author} you need to be in a voice channel to play music, idiot.`)
+        if(!voiceChannel) return message.channel.send("`" + `${message.author} you need to be in a voice channel to play music, idiot.` + "`")
         const permissions = voiceChannel.permissionsFor(message.client.user)
-        if(!permissions.has('CONNECT')) return message.channel.send(`I do not have permissions to connect to that voice channel idiot.`)
-        if(!permissions.has('SPEAK')) return message.channel.send(`I do not have permissions to speak in the voice channel fucker.`)
+        if(!permissions.has('CONNECT')) return message.channel.send("`" + `I do not have permissions to connect to that voice channel idiot.` + "`")
+        if(!permissions.has('SPEAK')) return message.channel.send("`" +  `I do not have permissions to speak in the voice channel fucker.` + "`")
 
         try {
             var connection = await voiceChannel.join()
@@ -239,7 +239,7 @@ client.on('message', async message => {
         })
         dispatcher.setVolumeLogarithmic(5 / 5)
     } else if (message.content.toLowerCase().startsWith(`${PREFIX}stop`)) {
-        if(!message.member.voice.channel) return message.channel.send(`${message.author} you need to be in a voice channel to play music, idiot.`)
+        if(!message.member.voice.channel) return message.channel.send("`" + `${message.author} you need to be in a voice channel to play music, idiot.` + "`")
         message.channel.send("`SEE YA LATER NIG-`")
         message.member.voice.channel.leave()
         return undefined

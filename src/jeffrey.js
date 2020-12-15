@@ -6,7 +6,7 @@ const client = new Client({
 });
 const PREFIX = "$";
 
-var jeffreyversion = "1.3"
+var jeffreyversion = "1.4"
 
 var servers = {};
 
@@ -133,6 +133,8 @@ client.on('message', (message) => {
 });
 
 
+//
+
 
 
 // EMOJI ROLES ADD.
@@ -207,56 +209,42 @@ client.on('messageReactionRemove', (reaction, user) => {
 
 
 // Music Commands
-client.on('message', message => {
-    let args = message.content.substring(PREFIX.length).split(" ");
 
-    switch (args[0]) {
-        case 'play':
+client.on('message', async message => {
+    if (message.author.bot) return;
+    if (!message.content.startsWith(PREFIX)) return
 
-            function play(connection, message) {
-                var server = servers[message.guild.id];
+    const args = message.content.substring(PREFIX.length).split(" ")
 
-                server.dispatcher = connection.playStream(ytdl(server.queue[0], {filter: "audioonly"}));
+    if (message.content.toLowerCase().startsWith(`${PREFIX}play`)) {
+        const voiceChannel = message.member.voice.channel
+        if(!voiceChannel) return message.channel.send(`${message.author} you need to be in a voice channel to play music, idiot.`)
+        const permissions = voiceChannel.permissionsFor(message.client.user)
+        if(!permissions.has('CONNECT')) return message.channel.send(`I do not have permissions to connect to that voice channel idiot.`)
+        if(!permissions.has('SPEAK')) return message.channel.send(`I do not have permissions to speak in the voice channel fucker.`)
 
-                server.queue.shift();
+        try {
+            var connection = await voiceChannel.join()
+        } catch (err) {
+            console.log(`Caught an error while connecting to the voice channel: ${err}`)
+            return message.channel.send(`Connection error caught while joining the voice channel: ${err}`)
+        }
 
-                server.dispatcher.on("end", function(){
-                    if(server.queue[0]){
-                        play(connection, message);
-                    } else {
-                        connection.disconnect();
-                    }
-                });
-
-            }
-
-
-            if(!args[1]) {
-                message.channel.send("Please provide a valid link.");
-                return;
-            }
-
-            if(!message.member.voice.channel) {
-                message.channel.send("You must be in a voice channel to play the bot, idiot.")
-                return;
-            }
-
-            if(!servers[message.guild.id]) servers[message.guild.id] = {
-                queue: []
-            }
-
-            var server = servers[message.guild.id];
-
-            server.queue.push(args[1]);
-
-            if (message.member.voice.connection) 
-                    message.member.voice.channel.join()
-                    .catch((err) => console.log(err))
-                    .then(function(connection) {
-                        play(connection, message);
-            })
-        break;
+        const dispatcher = connection.play(ytdl(args[1]))
+        .on('finish', () => {
+            voiceChannel.leave()
+        })
+        .on('error', error => {
+            console.log(error)
+        })
+        dispatcher.setVolumeLogarithmic(5 / 5)
+    } else if (message.content.toLowerCase().startsWith(`${PREFIX}stop`)) {
+        if(!message.member.voice.channel) return message.channel.send(`${message.author} you need to be in a voice channel to play music, idiot.`)
+        message.channel.send("`SEE YA LATER NIG-`")
+        message.member.voice.channel.leave()
+        return undefined
     }
+
 });
 
 // CLIENT LOGIN

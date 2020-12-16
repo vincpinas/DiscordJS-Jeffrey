@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const { Client, Attachment } = require('discord.js');
+const { Client } = require('discord.js');
 const client = new Client({
     partials:['MESSAGE', 'REACTION']
 });
@@ -8,9 +8,9 @@ const PREFIX = "$";
 
 var jeffreyversion = "1.4"
 
-var servers = {};
-
 const ytdl = require("ytdl-core")
+
+const fs = require('fs');
 
 // CLIENT READY AND BOT ACTIVITY
 client.on('ready', () => {
@@ -61,19 +61,28 @@ client.on('message', async (message) => {
 
 
 // MESSAGE HANDLER TO BAN ANY USERS WHO USE INAPPROPRIATE LANGUAGE.
-client.on ('message', async (message) => {
-    if (message.author.bot) return;
-        if (message.content.toLowerCase() === "homo" || message.content.toLowerCase() === "slet") {
-            try {
-                const user = await message.guild.members.ban(message.author.id);
-                message.channel.send('Succesfully kicked a user for "Inapropriate behavior"')
-                message.guild.members.unban(message.author.id);
-            } catch (err) {
-                console.log(err);
-                message.channel.send('something went wrong..')
+// Split all the items in the file containing swearwords and put them into an array.
+const filename = 'src/swearwords.txt'
+fs.readFile(filename, 'utf8', function(err, data) {
+    if (err) throw err;
+    const swearwords = data.split(/\r\n/)
+
+// If any of the items in the swearwords list are a match it autobans them.
+    client.on ('message', async (message) => {
+        if (message.author.bot) return;
+            let swearindex = swearwords.indexOf(message.content.toLowerCase())
+            if (message.content.toLowerCase() === swearwords[swearindex]) {
+                try {
+                    const user = await message.guild.members.ban(message.author.id);
+                    message.channel.send('Succesfully kicked a user for "Inapropriate behavior"')
+                    message.guild.members.unban(message.author.id);
+                } catch (err) {
+                    console.log(err);
+                    message.channel.send('something went wrong..')
+                }
             }
-        }
-});
+    })
+})
 
 
 

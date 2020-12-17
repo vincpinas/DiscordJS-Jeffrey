@@ -1,10 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
 
 * {
     box-sizing: border-box;
     padding: 0;
     margin: 0;
-    font-family: 'Roboto';
+    font-family: 'Poppins';
 }
 
 body {
@@ -174,4 +174,11 @@ iframe {
 .changelog .log span {
     font-weight: 300;
     font-size: 13px;
+}
+
+#updatev {
+    font-weight: 600;
+    color: #6bdae2;
+    letter-spacing: 1px;
+    text-transform: uppercase;
 }

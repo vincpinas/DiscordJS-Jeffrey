@@ -6,11 +6,9 @@ const client = new Client({
 });
 const PREFIX = "$";
 
-var jeffreyversion = "1.3.2"
+var jeffreyversion = "1.4.0"
 
 const ytdl = require("ytdl-core")
-
-const fs = require('fs');
 
 // CLIENT READY AND BOT ACTIVITY
 client.on('ready', () => {
@@ -22,9 +20,9 @@ client.on('ready', () => {
 
 // CUSTOM COMMANDS.
 client.on('message', async (message) => {
-    if (message.author.bot) return; // .bot is a boolean, incase the bot sends a message it returns so anything after it doens't run so it doesn't spam because of itself.
-    if (message.content.startsWith(PREFIX)) { // Check if the message starts with the prefix before doing anything else.
-            const [CMD_NAME, ...args] = message.content // Take the Name of the command and any arguments passed to it in a list, seperate them using the seperator(...)
+    if (message.author.bot) return; 
+    if (message.content.startsWith(PREFIX)) { 
+            const [CMD_NAME, ...args] = message.content 
             .trim()
             .substring(PREFIX.length)
             .split(/\s+/);
@@ -134,6 +132,12 @@ client.on('message', (message) => {
             message.channel.send(`My current version is ${jeffreyversion}`)
                 .catch((err) => message.channel.send('Something went wrong..'));
         }
+
+        // Are you okay?
+        if (message.content.toUpperCase() === 'ARE YOU OKAY?') {
+            message.channel.send(`Honestly? not really :pensive:`)
+                .catch((err) => message.channel.send('Something went wrong..'));
+        }
 });
 
 
@@ -213,42 +217,87 @@ client.on('messageReactionRemove', (reaction, user) => {
 
 
 // Music Commands
+// Server Queue
+const servers = {};
 
 client.on('message', async message => {
     if (message.author.bot) return;
     if (!message.content.startsWith(PREFIX)) return
 
     const args = message.content.substring(PREFIX.length).split(" ")
+    const voiceChannel = message.member.voice.channel
+    const permissions = voiceChannel.permissionsFor(message.client.user)
 
-    if (message.content.toLowerCase().startsWith(`${PREFIX}play`)) {
-        const voiceChannel = message.member.voice.channel
-        if(!voiceChannel) return message.channel.send("`" + `${message.author} you need to be in a voice channel to play music, idiot.` + "`")
-        const permissions = voiceChannel.permissionsFor(message.client.user)
-        if(!permissions.has('CONNECT')) return message.channel.send("`" + `I do not have permissions to connect to that voice channel idiot.` + "`")
-        if(!permissions.has('SPEAK')) return message.channel.send("`" +  `I do not have permissions to speak in the voice channel fucker.` + "`")
+    switch (args[0]) {
+        case 'play':
+            function play(connection, message) {
+                var server = servers[message.guild.id];
 
-        try {
-            var connection = await voiceChannel.join()
-        } catch (err) {
-            console.log(`Caught an error while connecting to the voice channel: ${err}`)
-            return message.channel.send(`Connection error caught while joining the voice channel: ${err}`)
-        }
+                server.dispatcher = connection.play(ytdl(server.queue[0], {filter: 'audioonly'}));
+    
+                server.queue.shift();
+    
+                server.dispatcher.on("finish", () => {
+                    if(server.queue[0]) {
+                        play(connection, message);
+                    } else {
+                        connection.disconnect();
+                    }
+                });
+            }
+    
+            if(!args[1]) return message.channel.send(`I'm sorry ${message.author}, you still need to provide a link.`)
 
-        const dispatcher = connection.play(ytdl(args[1]))
-        .on('finish', () => {
-            voiceChannel.leave()
-        })
-        .on('error', error => {
-            console.log(error)
-        })
-        dispatcher.setVolumeLogarithmic(5 / 5)
-    } else if (message.content.toLowerCase().startsWith(`${PREFIX}stop`)) {
-        if(!message.member.voice.channel) return message.channel.send("`" + `${message.author} you need to be in a voice channel to play music, idiot.` + "`")
-        message.channel.send("`SEE YA LATER NIG-`")
-        message.member.voice.channel.leave()
-        return undefined
+            if(!voiceChannel) return message.channel.send(`${message.author} you need to be in a voice channel to play music.`)
+
+            if(!permissions.has('CONNECT')) return message.channel.send(`I do not have permissions to connect to that voice channel.`)
+
+            if(!permissions.has('SPEAK')) return message.channel.send(`I do not have permissions to speak in the voice channel.`)
+    
+            if(!servers[message.guild.id]) servers[message.guild.id] = {
+                queue: []
+            }
+
+            var server = servers[message.guild.id];
+
+            server.queue.push(args[1]);
+    
+            if(!message.guild.voice) voiceChannel.join().then((connection) => {
+                play(connection, message);
+            })
+
+        break;
+
+
+        case 'skip':
+            var server = servers[message.guild.id];
+            if (!message.member.voice.channel) return message.channel.send(`I'm sorry ${message.author} but you're not a channel like you are supposed to be.`)
+            if(server.dispatcher) server.dispatcher.end();
+        break;
+
+
+        case 'queue':
+            var server = servers[message.guild.id];
+            try {
+                if (server.queue.length === 0) {
+                    message.channel.send(`There is currently nothing in the queue.`)
+                } else {
+                    message.channel.send(`The Current Queue Is:`)
+                    server.queue.map(async(item, index) => {
+                        let count = index + 1
+                        let info = await ytdl.getBasicInfo(server.queue[index])
+                        message.channel.send(`${count}. ${info.videoDetails.media.song} by ${info.videoDetails.media.artist}`)
+                    })
+                }
+            } catch {
+                message.channel.send(`There is currently no queue, please use the play command to start adding songs.`)
+            }
+        break;
+
+        case 'stop':
+
+        break;
     }
-
 });
 
 // CLIENT LOGIN

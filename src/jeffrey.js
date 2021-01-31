@@ -6,7 +6,7 @@ const client = new Client({
 });
 const PREFIX = "$";
 
-var jeffreyversion = "1.4.0"
+var jeffreyversion = "1.4.2"
 
 const ytdl = require("ytdl-core")
 
@@ -224,13 +224,21 @@ client.on('message', async message => {
     if (message.author.bot) return;
     if (!message.content.startsWith(PREFIX)) return
 
-    const args = message.content.substring(PREFIX.length).split(" ")
     const voiceChannel = message.member.voice.channel
-    const permissions = voiceChannel.permissionsFor(message.client.user)
+    const args = message.content.substring(PREFIX.length).split(" ")
+
+    args[0] = args[0].toLowerCase()
 
     switch (args[0]) {
         case 'play':
-            function play(connection, message) {
+            // Check if a youtube link was passed in or not.
+            const regex = /^(https?\:\/\/)?(www\.)?(youtube\.com|youtu\.?be)\/.+$/g;
+            let linkver = args[1].match(regex)
+
+            if (linkver == null) return message.channel.send(`Please pass in a valid YouTube link, ${message.author.username}`);
+
+            // Play Function
+            const play = (connection, message) => {
                 var server = servers[message.guild.id];
 
                 server.dispatcher = connection.play(ytdl(server.queue[0], {filter: 'audioonly'}));
@@ -246,13 +254,10 @@ client.on('message', async message => {
                 });
             }
     
-            if(!args[1]) return message.channel.send(`I'm sorry ${message.author}, you still need to provide a link.`)
+            // Aditional Necessary checks and setup.
+            if(!args[1]) return message.channel.send(`I'm sorry ${message.author.username}, you still need to provide a link.`)
 
-            if(!voiceChannel) return message.channel.send(`${message.author} you need to be in a voice channel to play music.`)
-
-            if(!permissions.has('CONNECT')) return message.channel.send(`I do not have permissions to connect to that voice channel.`)
-
-            if(!permissions.has('SPEAK')) return message.channel.send(`I do not have permissions to speak in the voice channel.`)
+            if(!voiceChannel) return message.channel.send(`${message.author.username} you need to be in a voice channel to play music.`)
     
             if(!servers[message.guild.id]) servers[message.guild.id] = {
                 queue: []
@@ -262,6 +267,7 @@ client.on('message', async message => {
 
             server.queue.push(args[1]);
     
+            // If not in the voice channel yet, join and exec the func otherwise, do everything except this.
             if(!message.guild.voice) voiceChannel.join().then((connection) => {
                 play(connection, message);
             })
@@ -271,8 +277,13 @@ client.on('message', async message => {
 
         case 'skip':
             var server = servers[message.guild.id];
-            if (!message.member.voice.channel) return message.channel.send(`I'm sorry ${message.author} but you're not a channel like you are supposed to be.`)
-            if(server.dispatcher) server.dispatcher.end();
+            try {
+                if (!message.member.voice.channel) return message.channel.send(`I'm sorry ${message.author.username} but you're not a channel like you are supposed to be.`)
+                if(server.dispatcher) server.dispatcher.end();
+            } catch(err) {
+                console.log(err)
+                message.channel.send(`There is currently no available dispatcher for this server, please start by using the play command before trying to skip.`)
+            }
         break;
 
 
@@ -282,20 +293,26 @@ client.on('message', async message => {
                 if (server.queue.length === 0) {
                     message.channel.send(`There is currently nothing in the queue.`)
                 } else {
-                    message.channel.send(`The Current Queue Is:`)
+                    message.channel.send(`Next up:`)
                     server.queue.map(async(item, index) => {
                         let count = index + 1
                         let info = await ytdl.getBasicInfo(server.queue[index])
                         message.channel.send(`${count}. ${info.videoDetails.media.song} by ${info.videoDetails.media.artist}`)
                     })
                 }
-            } catch {
+            } catch(err) {
                 message.channel.send(`There is currently no queue, please use the play command to start adding songs.`)
             }
         break;
 
         case 'stop':
+            var server = servers[message.guild.id];
+            if(message.guild.voice) {
+                for(let i = server.queue.length -1; i >=0; i--) server.queue.splice(i, 1);
+            }
 
+            server.dispatcher.end();
+            message.channel.send(`The queue has been stopped.`)
         break;
     }
 });

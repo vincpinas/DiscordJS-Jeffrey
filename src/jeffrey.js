@@ -1,14 +1,35 @@
 require('dotenv').config();
 
-const { Client } = require('discord.js');
+const { Client, MessageEmbed } = require('discord.js');
 const client = new Client({
     partials:['MESSAGE', 'REACTION']
 });
 const PREFIX = "$";
+const servers = {};
 
-var jeffreyversion = "1.4.2"
+var jeffreyversion = "1.4.3";
 
-const ytdl = require("ytdl-core")
+const ytdl = require("ytdl-core");
+
+// Choose a random item in the Data list passed as a parameter.
+function choose(data) {
+    let index = Math.floor(Math.random() * data.length);
+    return data[index]
+};
+
+const SexyImagesData = [
+    "src/images/ratsmodu.jpg",
+    "src/images/thanass.jpg",
+    "src/images/minionmeme.jpg",
+    "src/images/tumblr_inlinefrog.jpg",
+    "src/images/notevenstat.png",
+    "src/images/travispain.jpg",
+    "src/images/adiosamigos.jpg",
+    "src/images/yareyare.jpg",
+    "src/images/latom.jpg",
+    "src/images/propermoan.jpg",
+    "src/images/egirlgreen.jpg",
+]
 
 // CLIENT READY AND BOT ACTIVITY
 client.on('ready', () => {
@@ -16,7 +37,6 @@ client.on('ready', () => {
 
     client.user.setActivity("Whale Sounds", {type: "LISTENING"});
 });
-
 
 // CUSTOM COMMANDS.
 client.on('message', async (message) => {
@@ -51,6 +71,20 @@ client.on('message', async (message) => {
                 console.log(err);
                 message.channel.send('Error occured. Either no user has been found or I have insufficient permissions')
             }
+        } else if (CMD_NAME.toLowerCase() === 'portfolio') {
+            const portfolioEmbed = new MessageEmbed()
+                .setColor(args[0])
+                .setTitle(`${message.author.username}'s portfolio`)
+                .setURL(args[1])
+                .setAuthor(`${message.author.username}`)
+                .setDescription(args.slice(2, args.length).join(' '))
+                .setTimestamp()
+                .setFooter(`check it out!`, message.author.avatarURL())
+
+            message.channel.send(portfolioEmbed)
+            message.delete()
+        } else if (CMD_NAME.toLowerCase() === 'portfolioformat') {
+            message.channel.send("@everyone Please format your portfolio embed in the following way: `$Portfolio 'Colorcode' 'Url' 'Description'`")
         }
     }
 });
@@ -67,7 +101,7 @@ client.on ('message', async (message) => {
         let swearindex = swearwords.indexOf(message.content.toLowerCase())
         if (message.content.toLowerCase() === swearwords[swearindex]) {
             try {
-                const user = await message.guild.members.ban(message.author.id);
+                await message.guild.members.ban(message.author.id);
                 message.channel.send('Succesfully kicked a user for "Inapropriate behavior"')
                 message.guild.members.unban(message.author.id);
             } catch (err) {
@@ -75,9 +109,7 @@ client.on ('message', async (message) => {
                 message.channel.send('something went wrong..')
             }
         }
-})
-
-
+});
 
 
 // CUSTOM MESSAGE RESPONSES.
@@ -86,62 +118,55 @@ client.on('message', (message) => {
         // Je Moeder Response
         if (message.content.toUpperCase() === 'JE MOEDER') {
             message.channel.send(`okay ${message.author.username}, ook jou dikke olifant mama`)
-                .catch((err) => message.channel.send('Something went wrong..'));
         }
 
         // Waarom? Response
         if (message.content.toUpperCase() === 'WAAROM?') {
             message.channel.send(`Omdat het kan.`)
-                .catch((err) => message.channel.send('Something went wrong..'));
         }
 
         // Lag/Lagging Response
         if (message.content.toUpperCase() === 'LAG') {
             message.channel.send(`It's not my fault you're on McDonalds internet ${message.author.username}`)
-                .catch((err) => message.channel.send('Something went wrong..'));
         }
 
         // Who are You?
         if (message.content.toUpperCase() === 'WHO ARE YOU?') {
             const thisguild = message.guild;
             const owner = thisguild.owner.user.username;
-            message.channel.send(`I'm V.I.D.A the personal assistant of ${message.guild.owner.user.username}`)
-                .catch((err) => message.channel.send('Something went wrong..'));
+            message.channel.send(`I'm V.I.D.A the personal assistant of ${owner}`)
         }
 
         // What does VIDA stand for?
         if (message.content.toUpperCase() === 'VIDA?') {
             message.channel.send(`V.I.D.A Stands for "Vincent's Personal Discord Assistant"`)
-                .catch((err) => message.channel.send('Something went wrong..'));
         }
 
         // PeePee Response
         if (message.content.toUpperCase() === 'PEEPEE') {
             message.channel.send(`PooPoo, ${message.author.username}?`, {files: ["src/images/coolcat.jpg"]})
-                .catch((err) => message.channel.send('Something went wrong..'));
         }
 
         // Kinda Cringe Response
         if (message.content.toUpperCase() === 'KINDA CRINGE') {
             message.channel.send(`You're cringe ${message.author.username}`)
-                .catch((err) => message.channel.send('Something went wrong..'));
         }
 
         // Current Version
         if (message.content.toUpperCase() === 'CURRENT VERSION?' || message.content.toUpperCase() === 'CURRENT V?' || message.content.toUpperCase() === 'WHAT IS THE CURRENT VERSION?' || message.content.toUpperCase() === 'WHAT IS THE CURRENT V?') {
             message.channel.send(`My current version is ${jeffreyversion}`)
-                .catch((err) => message.channel.send('Something went wrong..'));
         }
 
         // Are you okay?
         if (message.content.toUpperCase() === 'ARE YOU OKAY?') {
             message.channel.send(`Honestly? not really :pensive:`)
-                .catch((err) => message.channel.send('Something went wrong..'));
+        }
+
+        if (message.content.toUpperCase() === 'SEXY?') {
+            let imageobject = choose(SexyImagesData)
+            message.channel.send({files: [imageobject]})
         }
 });
-
-
-//
 
 
 
@@ -217,8 +242,6 @@ client.on('messageReactionRemove', (reaction, user) => {
 
 
 // Music Commands
-// Server Queue
-const servers = {};
 
 client.on('message', async message => {
     if (message.author.bot) return;
